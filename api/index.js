@@ -4,7 +4,11 @@ const bodyParser = require('body-parser')
 
 const jsonParser = bodyParser.json()
 
-// const { v4 } = require('uuid');
+// MIDDLEWARE
+app.use((req, res, next) => {
+    console.log('Time: ', Date.now());
+    next();
+});
 
 app.get("/api", (req, res) => {
   const path = `/api/item/`;
@@ -13,6 +17,12 @@ app.get("/api", (req, res) => {
   res.end(`Hello! Go todf item: <a href="${path}">${path}</a>`);
 });
 
+// TESTING FOR TOKEN
+app.get("/token", (req, res) => {
+  res.end(process.env.API_TOKEN + ' | ' + process.env.API_TOKEN);
+});
+
+// TICKET PURCHASE REGISTRATION
 app.post("/api/ticket/purchase", jsonParser, (req, res) => {
     res.setHeader("Cache-Control", "s-max-age=1, stale-while-revalidate");
     res.json(body);
