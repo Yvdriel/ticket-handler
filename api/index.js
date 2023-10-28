@@ -29,7 +29,7 @@ app.post("/api/ticket/purchase", jsonParser, (req, res) => {
   res.setHeader("Cache-Control", "s-max-age=1, stale-while-revalidate");
 
   service
-    .post("/posts", body_mapper(req.params))
+    .post("/posts", body_mapper(req.body))
     .then((response) => {
       res.json(response.data);
     })
