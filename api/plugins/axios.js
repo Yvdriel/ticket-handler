@@ -6,7 +6,7 @@ const service = axios.create({
   headers: {
     Accept: "application/json",
     "Content-Type": "application/json",
-    Authorization: `Bearer ${process.env.API_TOKEN}`,
+    Authorization: `${process.env.API_TOKEN}`,
   },
 });
 

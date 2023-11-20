@@ -28,8 +28,10 @@ app.get("/api/token", (req, res) => {
 app.post("/api/ticket/purchase", jsonParser, (req, res) => {
   res.setHeader("Cache-Control", "s-max-age=1, stale-while-revalidate");
 
+  res.end(JSON.stringify(body_mapper(req.body)));
+  return;
   service
-    .post("/posts", body_mapper(req.body))
+    .post("/Purchases?api_token=" + process.eventNames.API_TOKEN, body_mapper(req.body))
     .then((response) => {
       res.json(response.data);
     })
