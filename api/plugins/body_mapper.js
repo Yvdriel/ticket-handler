@@ -27,7 +27,6 @@ const body_mapper = (request) => {
         for (i=0; i < line_item.quantity; i++) {
             body.PurchaseItems.push(
                 {
-                    PurchaseId: 0,
                     TicketId: get_ticket_id(line_item.name),
                     TicketHolderEmail: request.contact_email,
                     TicketHolderFirstname: request.billing_address.first_name,
