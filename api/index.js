@@ -28,12 +28,17 @@ app.get("/api/token", (req, res) => {
 app.post("/api/ticket/purchase", jsonParser, (req, res) => {
   res.setHeader("Cache-Control", "s-max-age=1, stale-while-revalidate");
 
-  service.get(process.env.QUEUE_URL + process.env.EVENT_ID).then((response) => {
-    setTimeout(
-      () => startPurchase(req, res),
-      response.data.queueTimeInSeconds ?? 0
-    );
-  });
+  service
+    .get(process.env.QUEUE_URL + process.env.EVENT_ID)
+    .then((response) => {
+      setTimeout(
+        () => startPurchase(req, res),
+        response.data.queueTimeInSeconds ?? 0
+      );
+    })
+    .catch((error) => {
+      res.json(error);
+    });
 });
 
 const startPurchase = (req, res) => {
