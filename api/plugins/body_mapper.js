@@ -23,6 +23,9 @@ const body_mapper = (request) => {
     body.Email = request.contact_email ?? '';
     body.PaidDate = nowIso;
 
+    delete body.PurchaseItems;
+    body.PurchaseItems = [];
+
     request.line_items.forEach(line_item => {
         for (i=0; i < line_item.quantity; i++) {
             body.PurchaseItems.push(
