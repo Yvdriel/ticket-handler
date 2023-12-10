@@ -2,16 +2,17 @@ const { text } = require("express");
 const body = require("../body.js");
 
 const ticket_map = {
-    early: process.env.EARLY_ID,
-    regular: process.env.REGULAR_ID,
-    late: process.env.LATE_ID,
-    stand: process.env.STAND_ID,
+    8631878320475: process.env.EARLY_ID,
+    8631880024411: process.env.REGULAR_ID,
+    8631884120411: process.env.LATE_ID,
+    8632081514843: process.env.STAND_ID,
+    8696450842971: process.env.LUBING_ID,
 };
 
-const get_ticket_id = (name) => {
+const get_ticket_id = (product_id) => {
     for (item in ticket_map) {
-        if (name.toLowerCase().includes(item)) {
-            return ticket_map[item];
+        if (ticket_map[product_id]) {
+            return ticket_map[product_id];
         }
     }
 }
@@ -30,7 +31,7 @@ const body_mapper = (request) => {
         for (i=0; i < line_item.quantity; i++) {
             body.PurchaseItems.push(
                 {
-                    TicketId: get_ticket_id(line_item.name),
+                    TicketId: get_ticket_id(line_item.product_id),
                     TicketHolderEmail: request.contact_email,
                     TicketHolderFirstname: request.billing_address.first_name,
                     TicketHolderLastname: request.billing_address.last_name,

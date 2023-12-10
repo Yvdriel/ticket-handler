@@ -4,29 +4,36 @@ const app = require("express")();
 const body_mapper = require("./plugins/body_mapper.js");
 const bodyParser = require("body-parser");
 const service = require("./plugins/axios.js");
+const verifyWehbook = require("./plugins/webhook.js");
 
 const jsonParser = bodyParser.json();
 
 // MIDDLEWARE
-app.use((req, res, next) => {
-  console.log("Time: ", Date.now());
-  next();
-});
+app.use(bodyParser.json({
+  verify: (req, res, buf) => {
+    req.rawBody = buf
+  }
+}))
+app.use(verifyWehbook);
 
 app.get("/api", (req, res) => {
   res.setHeader("Content-Type", "text/html");
   res.setHeader("Cache-Control", "s-max-age=1, stale-while-revalidate");
   res.end(`why are you here`);
+  return;
 });
 
 // TESTING FOR TOKEN
 app.get("/api/token", (req, res) => {
   res.end(process.env.API_TOKEN + " | " + process.env.API_URL);
+  return;
 });
 
 // TICKET PURCHASE REGISTRATION
 app.post("/api/ticket/purchase", jsonParser, (req, res) => {
-  res.setHeader("Cache-Control", "s-max-age=1, stale-while-revalidate");
+  if (!res.headersSent) {
+    res.setHeader("Cache-Control", "s-max-age=1, stale-while-revalidate");
+  }
 
   service
     .get(process.env.QUEUE_URL + process.env.EVENT_ID)
@@ -37,7 +44,8 @@ app.post("/api/ticket/purchase", jsonParser, (req, res) => {
       );
     })
     .catch((error) => {
-      res.json(error);
+      res.status(400).json(error);
+      return;
     });
 });
 
@@ -51,7 +59,8 @@ const startPurchase = (req, res) => {
       startPayment(response.data, res);
     })
     .catch((error) => {
-      res.json(error);
+      res.status(400).json(error);
+      return;
     });
 };
 
@@ -65,9 +74,10 @@ const startPayment = (purchase, res) => {
     )
     .then((response) => {
       res.json(response.data);
+      return;
     })
     .catch((error) => {
-      res.json(error);
+      res.status(400).json(error);
     });
 };
 
