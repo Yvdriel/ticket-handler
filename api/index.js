@@ -4,17 +4,35 @@ const app = require("express")();
 const body_mapper = require("./plugins/body_mapper.js");
 const bodyParser = require("body-parser");
 const service = require("./plugins/axios.js");
+const db = require("./plugins/postgresql.js");
 const verifyWehbook = require("./plugins/webhook.js");
 
 const jsonParser = bodyParser.json();
 
 // MIDDLEWARE
-app.use(bodyParser.json({
-  verify: (req, res, buf) => {
-    req.rawBody = buf;
-  }
-}))
+app.use(
+  bodyParser.json({
+    verify: (req, res, buf) => {
+      req.rawBody = buf;
+    },
+  })
+);
 app.use(verifyWehbook);
+
+app.get("/api/create-order-table", (req, res) => {
+  db.query(
+    "CREATE TABLE order_confirmation ( order_number int, confirmed bool )"
+  )
+    .then((data) => {
+      res.json(data.value);
+      console.log("DATA:", data.value);
+    })
+    .catch((error) => {
+      res.json(error);
+      console.log("ERROR:", error);
+    });
+  return;
+});
 
 app.get("/api", (req, res) => {
   res.setHeader("Content-Type", "text/html");
@@ -35,19 +53,23 @@ app.post("/api/ticket/purchase", jsonParser, (req, res) => {
     res.setHeader("Cache-Control", "s-max-age=1, stale-while-revalidate");
   }
 
-  res.status(200).end();
-  service
-    .get(process.env.QUEUE_URL + process.env.EVENT_ID)
-    .then((response) => {
-      setTimeout(
-        () => startPurchase(req, res),
-        response.data.queueTimeInSeconds ?? 0
-      );
-    })
-    .catch((error) => {
-      // res.status(400).json(error);
+  findOrder(req, res).then((data) => {
+    if (data === true) {
+      res.status(200).send("Already confirmed");
       return;
-    });
+    }
+    service
+      .get(process.env.QUEUE_URL + process.env.EVENT_ID)
+      .then((response) => {
+        setTimeout(
+          () => startPurchase(req, res),
+          response.data.queueTimeInSeconds ?? 0
+        );
+      })
+      .catch((error) => {
+        return;
+      });
+  });
 });
 
 const startPurchase = (req, res) => {
@@ -60,7 +82,6 @@ const startPurchase = (req, res) => {
       startPayment(response.data, res);
     })
     .catch((error) => {
-      // res.status(400).json(error);
       return;
     });
 };
@@ -74,12 +95,42 @@ const startPayment = (purchase, res) => {
       }
     )
     .then((response) => {
-      // res.json(response.data);
+      createOrder(req, res);
       return;
     })
+    .catch((error) => {});
+};
+
+const findOrder = async (req, res) => {
+  return db
+    .one(
+      "SELECT Confirmed FROM order_confirmation WHERE Order_number = $1",
+      req.body.order_number
+    )
+    .then((data) => {
+      if (data.confirmed === true) {
+        // res.send("already confirmed");
+        return data.confirmed;
+      }
+    })
     .catch((error) => {
-      // res.status(400).json(error);
+      console.log("ERROR:", error);
+      return false;
     });
+};
+
+const createOrder = (req, res) => {
+  db.query(
+    "INSERT INTO order_confirmation (Order_number, confirmed) VALUES ($1, true);",
+    req.body.order_number
+  )
+    .then((data) => {
+      res.json(data);
+    })
+    .catch((error) => {
+      res.json(error);
+    });
+  return;
 };
 
 module.exports = app;
