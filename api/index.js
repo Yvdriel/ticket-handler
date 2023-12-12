@@ -131,10 +131,8 @@ const createOrder = (req, res) => {
     req.body.order_number
   )
     .then((data) => {
-      res.json(data);
     })
     .catch((error) => {
-      res.json(error);
     });
   return;
 };
