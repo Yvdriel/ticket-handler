@@ -4,7 +4,6 @@ const app = require("express")();
 const body_mapper = require("./plugins/body_mapper.js");
 const bodyParser = require("body-parser");
 const service = require("./plugins/axios.js");
-
 const verifyWehbook = require("./plugins/webhook.js");
 
 const jsonParser = bodyParser.json();
