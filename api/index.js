@@ -102,7 +102,8 @@ const startPayment = (purchase, res) => {
 };
 
 const findOrder = async (req, res) => {
-  return db
+  try {
+    return db
     .one(
       "SELECT Confirmed FROM order_confirmation WHERE Order_number = $1",
       req.body.order_number
@@ -117,6 +118,10 @@ const findOrder = async (req, res) => {
       console.log("ERROR:", error);
       return false;
     });
+  } catch {
+    return false;
+  }
+
 };
 
 const createOrder = (req, res) => {
