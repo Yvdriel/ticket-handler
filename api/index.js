@@ -35,7 +35,7 @@ app.post("/api/ticket/purchase", jsonParser, (req, res) => {
     res.setHeader("Cache-Control", "s-max-age=1, stale-while-revalidate");
   }
 
-  res.status(200);
+  res.status(200).end();
   service
     .get(process.env.QUEUE_URL + process.env.EVENT_ID)
     .then((response) => {
