@@ -35,6 +35,7 @@ app.post("/api/ticket/purchase", jsonParser, (req, res) => {
     res.setHeader("Cache-Control", "s-max-age=1, stale-while-revalidate");
   }
 
+  res.status(200);
   service
     .get(process.env.QUEUE_URL + process.env.EVENT_ID)
     .then((response) => {
@@ -44,7 +45,7 @@ app.post("/api/ticket/purchase", jsonParser, (req, res) => {
       );
     })
     .catch((error) => {
-      res.status(400).json(error);
+      // res.status(400).json(error);
       return;
     });
 });
@@ -59,7 +60,7 @@ const startPurchase = (req, res) => {
       startPayment(response.data, res);
     })
     .catch((error) => {
-      res.status(400).json(error);
+      // res.status(400).json(error);
       return;
     });
 };
@@ -73,11 +74,11 @@ const startPayment = (purchase, res) => {
       }
     )
     .then((response) => {
-      res.json(response.data);
+      // res.json(response.data);
       return;
     })
     .catch((error) => {
-      res.status(400).json(error);
+      // res.status(400).json(error);
     });
 };
 
