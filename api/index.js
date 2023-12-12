@@ -95,7 +95,7 @@ const startPayment = (purchase, res) => {
       }
     )
     .then((response) => {
-      createOrder(req, res);
+      res.end();
       return;
     })
     .catch((error) => {});
@@ -115,6 +115,7 @@ const findOrder = async (req, res) => {
       }
     })
     .catch((error) => {
+      createOrder(req, res);
       console.log("ERROR:", error);
       return false;
     });
