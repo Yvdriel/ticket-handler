@@ -11,7 +11,7 @@ const jsonParser = bodyParser.json();
 // MIDDLEWARE
 app.use(bodyParser.json({
   verify: (req, res, buf) => {
-    req.rawBody = buf
+    req.rawBody = buf;
   }
 }))
 app.use(verifyWehbook);
