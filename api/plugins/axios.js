@@ -2,7 +2,7 @@ const axios = require("axios");
 
 const service = axios.create({
   baseURL: process.env.API_URL,
-  withCredentials: false,
+  withCredentials: true,
   headers: {
     Accept: "application/json",
     "Content-Type": "application/json",

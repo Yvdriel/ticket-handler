@@ -95,7 +95,7 @@ const startPayment = (purchase, res) => {
       }
     )
     .then((response) => {
-      res.end();
+      res.send("GOED!");
       return;
     })
     .catch((error) => {});
