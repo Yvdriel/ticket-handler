@@ -2,10 +2,10 @@ const { text } = require("express");
 const body = require("../body.js");
 
 const ticket_map = {
-    8631878320475: process.env.EARLY_ID,
-    8631880024411: process.env.REGULAR_ID,
-    8631884120411: process.env.LATE_ID,
-    8632081514843: process.env.STAND_ID,
+    9195313365339: process.env.EARLY_ID,
+    9197719355739: process.env.REGULAR_ID,
+    9197725843803: process.env.LATE_ID,
+    9197736788315: process.env.STAND_ID,
     8696450842971: process.env.LUBING_ID,
 };
 
