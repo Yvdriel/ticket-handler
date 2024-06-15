@@ -6,7 +6,7 @@ const ticket_map = {
     9197719355739: process.env.REGULAR_ID,
     9197725843803: process.env.LATE_ID,
     9197736788315: process.env.STAND_ID,
-    8696450842971: process.env.LUBING_ID,
+    9274497171803: process.env.LUBING_ID,
 };
 
 const get_ticket_id = (product_id) => {
