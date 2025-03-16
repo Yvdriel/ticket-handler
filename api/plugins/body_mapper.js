@@ -2,11 +2,11 @@ const { text } = require("express");
 const body = require("../body.js");
 
 const ticket_map = {
-    9195313365339: process.env.EARLY_ID,
-    9197719355739: process.env.REGULAR_ID,
-    9197725843803: process.env.LATE_ID,
-    9197736788315: process.env.STAND_ID,
-    9274497171803: process.env.LUBING_ID,
+    // 9195313365339: process.env.EARLY_ID,
+    9792969212251: process.env.REGULAR_ID,
+    // 9197725843803: process.env.LATE_ID,
+    // 9197736788315: process.env.STAND_ID,
+    9793007681883: process.env.LUBING_ID,
 };
 
 const get_ticket_id = (product_id) => {
@@ -28,6 +28,8 @@ const body_mapper = (request) => {
     body.PurchaseItems = [];
 
     request.line_items.forEach(line_item => {
+        if (!get_ticket_id(line_item.product_id)) return;
+
         for (i=0; i < line_item.quantity; i++) {
             body.PurchaseItems.push(
                 {
