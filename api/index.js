@@ -53,6 +53,8 @@ app.post("/api/ticket/purchase", jsonParser, (req, res) => {
     res.setHeader("Cache-Control", "s-max-age=1, stale-while-revalidate");
   }
 
+  console.log("REQUEST:", req.body);
+
   findOrder(req, res).then((data) => {
     if (data === true) {
       res.status(200).send("Already confirmed");
@@ -82,6 +84,7 @@ const startPurchase = (req, res) => {
       startPayment(response.data, res);
     })
     .catch((error) => {
+      console.log("START PURCHASE ERROR:", error);
       return;
     });
 };
@@ -98,7 +101,9 @@ const startPayment = (purchase, res) => {
       res.send("GOED!");
       return;
     })
-    .catch((error) => {});
+    .catch((error) => {
+      console.log("START PAYMENT ERROR:", error);
+    });
 };
 
 const findOrder = async (req, res) => {
