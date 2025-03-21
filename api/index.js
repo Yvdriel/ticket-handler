@@ -17,7 +17,7 @@ app.use(
     },
   })
 );
-// app.use(verifyWehbook);
+app.use(verifyWehbook);
 
 app.get("/api/create-order-table", (req, res) => {
   db.query(
