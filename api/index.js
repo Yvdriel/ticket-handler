@@ -53,9 +53,8 @@ app.post("/api/ticket/purchase", jsonParser, (req, res) => {
     res.setHeader("Cache-Control", "s-max-age=1, stale-while-revalidate");
   }
 
-  console.log("REQUEST:", req.body);
-
   findOrder(req, res).then((data) => {
+    console.log("DATA:", data);
     if (data === true) {
       res.status(200).send("Already confirmed");
       return;
@@ -69,18 +68,21 @@ app.post("/api/ticket/purchase", jsonParser, (req, res) => {
         );
       })
       .catch((error) => {
+        console.log(error)
         return;
       });
   });
 });
 
 const startPurchase = (req, res) => {
+console.log("START PURCHASE");
   service
     .post(
       `/Purchases?api_token=${process.env.API_TOKEN}`,
       body_mapper(req.body)
     )
     .then((response) => {
+      console.log("START PURCHASE RESPONSE:", response.data);
       startPayment(response.data, res);
     })
     .catch((error) => {
